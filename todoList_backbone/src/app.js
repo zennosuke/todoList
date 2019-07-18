@@ -61,8 +61,32 @@ var LIST = Backbone.Collection.extend({
 var item1 = new Item({text: 'sample todo1'});
 var item2 = new Item({text: 'sample todo2'});
 var list = new LIST([item1, item2]);
-var list2 = new LIST([{text: 'sample todo3'}, {text: 'sample todo4'}]);
 
-list.each(function(e, i){
-  console.log('[' + i + ']' + e.get('text'));
+var ListView = Backbone.View.extend({
+  el: $('.js-todo_list'),
+  initialize: function() {
+    _.bindAll(this, 'render', 'addItem', 'appendItem');
+    this.collection.bind('add', this.appendItem);
+    this.render();
+  },
+  addItem: function(text) {
+    var model = new Item({text: text});
+    this.collection.add(model);
+  },
+  appendItem: function(model) {
+    var itemView = new ItemView({model: model});
+    this.$el.append(itemView.render().el);
+  },
+  render: function() {
+    console.log('render list');
+    var that = this;
+    this.collection.each(function(model, i){
+      that.appendItem(model);
+    });
+    return this;
+  }
 });
+
+var listView = new ListView({collection: list});
+listView.addItem('sample todo3');
+listView.addItem('sample todo4');
