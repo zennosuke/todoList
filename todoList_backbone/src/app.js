@@ -18,6 +18,10 @@ var Form = Backbone.Model.extend({
   }
 });
 
+var LIST = Backbone.Collection.extend({
+  model: Item
+});
+
 var ItemView = Backbone.View.extend({
   template: _.template($('#template-list-item').html()),
   events: {
@@ -58,10 +62,6 @@ var ItemView = Backbone.View.extend({
   }
 });
 
-var LIST = Backbone.Collection.extend({
-  model: Item
-});
-
 var ListView = Backbone.View.extend({
   el: $('.js-todo_list'),
   initialize: function() {
@@ -99,5 +99,29 @@ var item1 = new Item({text: 'sample todo1'});
 var item2 = new Item({text: 'sample todo2'});
 var list = new LIST([item1, item2]);
 var listView = new ListView({collection: list});
-listView.addItem('sample todo3');
-listView.addItem('sample todo4');
+var form = new Form();
+
+var FormView = Backbone.View.extend({
+  el: $('.js-form'),
+  template: _.template($('#template-form').html()),
+  model: form,
+  events: {
+    'click .js-add-todo': 'addTodo'
+  },
+  initialize: function() {
+    _.bindAll(this, 'render', 'addTodo');
+    this.model.bind('change', this.render);
+    this.render();
+  },
+  addTodo: function(e) {
+    e.preventDefault();
+    this.model.set({val: $('.js-get-val').val()});
+    listView.addItem(this.model.get('val'));
+  },
+  render: function(){
+    var template = this.template(this.model.attributes);
+    this.$el.html(template);
+    return this;
+  }
+});
+new FormView();
