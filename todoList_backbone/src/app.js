@@ -18,9 +18,15 @@ var Form = Backbone.Model.extend({
   }
 });
 
+var form = new Form();
+
 var LIST = Backbone.Collection.extend({
   model: Item
 });
+
+var item1 = new Item({text: 'sample todo1'});
+var item2 = new Item({text: 'sample todo2'});
+var list = new LIST([item1, item2]);
 
 var ItemView = Backbone.View.extend({
   template: _.template($('#template-list-item').html()),
@@ -28,7 +34,7 @@ var ItemView = Backbone.View.extend({
     'click .js-toggle-done': 'toggleDone',
     'click .js-click-trash': 'remove',
     'click .js-todo_list-text': 'showEdit',
-    'click .js-todo_list-editForm': 'closeEdit'
+    'keyup .js-todo_list-editForm': 'closeEdit'
   },
   initialize: function(options) {
     _.bindAll(this, 'toggleDone', 'render', 'remove', 'showEdit', 'closeEdit');
@@ -95,11 +101,7 @@ var ListView = Backbone.View.extend({
   }
 });
 
-var item1 = new Item({text: 'sample todo1'});
-var item2 = new Item({text: 'sample todo2'});
-var list = new LIST([item1, item2]);
 var listView = new ListView({collection: list});
-var form = new Form();
 
 var FormView = Backbone.View.extend({
   el: $('.js-form'),
@@ -115,8 +117,14 @@ var FormView = Backbone.View.extend({
   },
   addTodo: function(e) {
     e.preventDefault();
-    this.model.set({val: $('.js-get-val').val()});
-    listView.addItem(this.model.get('val'));
+    var val = $('.js-get-val').val();
+    if(!val) {
+      this.model.set({hasError: true, errorMsg: 'TODOが空です'});
+      $('.error').show();
+    } else {
+      this.model.set({val: $('.js-get-val').val()});
+      listView.addItem(this.model.get('val'));
+    }
   },
   render: function(){
     var template = this.template(this.model.attributes);
