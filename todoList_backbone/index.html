@@ -11,16 +11,12 @@
 <div class="main" id="app">
   <form class="form js-form"></form>
 
-  <div class="searchBox">
-    <i class="fa fa-search searchBox__icon" aria-hidden="true"></i>
-    <input type="text" class="searchBox__input js-search"
-           value="" placeholder="ここに絞り込みたいキーワードを入力する">
-  </div>
+  <div class="searchBox js-search"></div>
 
   <ul class="list js-todo_list"></ul>
 
   <script type="text/template" id="template-list-item">
-    <li class="list__item js-todo_list-item <% if (isDone){ %>list__item--done<% } %>">
+    <li class="list__item js-todo_list-item <% if (isDone){ %>list__item--done<% } %> <% if (!isShow){ %>list__item--hide<% } %>">
       <i class="fa <% if (isDone){ %>fa-check-square<% }else{ %>fa-square-o<% } %>
        icon-check js-toggle-done" aria-hidden="true"></i>
       <% if (!editMode){ %>
@@ -40,6 +36,11 @@
       <% } %>
     </div>
     <button class="btn js-add-todo">TODOを追加</button>
+  </script>
+
+  <script type="text/template" id="template-search">
+    <i class="fa fa-search searchBox__icon" aria-hidden="true"></i>
+    <input type="text" class="searchBox__input js-search-text" value="" placeholder="ここに絞り込みたいキーワードを入力する">
   </script>
 
 </div>

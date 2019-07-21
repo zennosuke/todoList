@@ -6,7 +6,8 @@ var Item = Backbone.Model.extend({
   defaults: {
     text: '',
     isDone: false,
-    editMode: false
+    editMode: false,
+    isShow: true
   }
 });
 
@@ -19,6 +20,14 @@ var Form = Backbone.Model.extend({
 });
 
 var form = new Form();
+
+var Search = Backbone.Model.extend({
+  defaults: {
+    val: ''
+  }
+});
+
+var search = new Search();
 
 var LIST = Backbone.Collection.extend({
   model: Item
@@ -61,7 +70,6 @@ var ItemView = Backbone.View.extend({
     }
   },
   render: function() {
-    console.log('render');
     var template = this.template(this.model.attributes);
     this.$el.html(template);
     return this;
@@ -92,7 +100,6 @@ var ListView = Backbone.View.extend({
     this.$el.append(itemView.render().el);
   },
   render: function() {
-    console.log('render list');
     var that = this;
     this.collection.each(function(model, i){
       that.appendItem(model);
@@ -122,7 +129,7 @@ var FormView = Backbone.View.extend({
       this.model.set({hasError: true, errorMsg: 'TODOが空です'});
       $('.error').show();
     } else {
-      this.model.set({val: $('.js-get-val').val()});
+      this.model.set({val: val});
       listView.addItem(this.model.get('val'));
     }
   },
@@ -133,3 +140,37 @@ var FormView = Backbone.View.extend({
   }
 });
 new FormView();
+
+var SearchView = Backbone.View.extend({
+  el: $('.js-search'),
+  template: _.template($('#template-search').html()),
+  model: search,
+  events: {
+    'keyup .js-search-text': 'searchTodo'
+  },
+  initialize: function() {
+    _.bindAll(this, 'render', 'searchTodo');
+    this.model.bind('change', this.render);
+    this.render();
+  },
+  searchTodo: function() {
+    var searchText = $('.js-search-text').val();
+    this.collection.forEach(function(e, i){
+      e.set({isShow: true});
+      var regrep = new RegExp('^' + searchText);
+      var text = e.get('text');
+      if( text && text.match(regrep)) {
+        return true;
+      };
+      e.set({isShow: false});
+    });
+    return this;
+  },
+  render: function() {
+    var template = this.template(this.model.attributes);
+    this.$el.html(template);
+    return this;
+  }
+});
+
+var searchView = new SearchView({collection: list});

@@ -83,6 +83,9 @@ body{
   background: #d8d8d8;
   color: #888;
 }
+.list__item--hide{
+  display: none;
+}
 .icon-square, .icon-check, .icon-sort, .icon-trash{
   cursor: pointer;
   transition: .5s transform;
