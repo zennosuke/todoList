@@ -14,7 +14,8 @@ export default class TodoList extends React.Component {
     for(let i in this.props.data) {
       tasks.push(<Task key={this.props.data[i].id}
                        id={this.props.data[i].id}
-                       text={this.props.data[i].text} onRemove={this.handleRemove} />);
+                       text={this.props.data[i].text} 
+                       onRemove={this.handleRemove} />);
     }
     return (
       <ul className="list js-todo_list">

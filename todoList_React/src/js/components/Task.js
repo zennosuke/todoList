@@ -7,7 +7,7 @@ export default class Task extends React.Component {
     this.state = {
       id: this.props.id,
       text: this.props.text,
-      idDone: false,
+      isDone: false,
       editMode: false
     };
     this.handleClickToggleDone = this.handleClickToggleDone.bind(this);
